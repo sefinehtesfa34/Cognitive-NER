@@ -1,109 +1,65 @@
-# Named Entity Recognition (NER) System
+# Named Entity Recognition (NER) with BERT and Flask
 
-This project implements a Named Entity Recognition (NER) system using a pre-trained BERT model. It includes data preparation, model training, evaluation, and a Flask web application for inference.
+This project demonstrates Named Entity Recognition (NER) using the BERT model and Flask web framework. NER is a natural language processing task where the goal is to locate and classify named entities mentioned in unstructured text into predefined categories such as the names of persons, organizations, locations, etc.
 
-## Table of Contents
+## Requirements
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Dependencies](#dependencies)
-- [License](#license)
+- Python 3.x
+- torch
+- transformers
+- datasets
+- Flask
+- Flask-CORS
 
-## Installation
+You can install the required packages using pip:
 
-Follow these steps to set up and run the project:
-
-1. **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/your-repo/ner-system.git
-    cd ner-system
-    ```
-
-2. **Create and activate a virtual environment:**
-
-    ```bash
-    python -m venv ner_env
-    # Windows
-    ner_env\Scripts\activate
-    # macOS/Linux
-    source ner_env/bin/activate
-    ```
-
-3. **Install the required dependencies:**
-
-    ```bash
-    pip install transformers datasets torch flask flask-cors
-    ```
 
 ## Usage
 
-1. **Run the Flask application:**
+1. Clone this repository to your local machine.
 
-    ```bash
-    python ner_system.py
-    ```
+2. Install the required packages as mentioned above.
 
-2. **Open `index.html` in a web browser:**
+3. Run the Flask app:
 
-    Create an `index.html` file with the following content:
 
-    ```
-    html
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NER System</title>
-    </head>
-    <body>
-        <h1>Named Entity Recognition</h1>
-        <textarea id="text-input" rows="10" cols="50"></textarea><br>
-        <button onclick="extractEntities()">Extract Entities</button>
-        <h2>Entities:</h2>
-        <div id="entities-output"></div>
+4. Once the server is running, you can access the NER extraction endpoint at `http://localhost:5000/extract_entities`.
 
-        <script>
-            async function extractEntities() {
-                const text = document.getElementById('text-input').value;
-                const response = await fetch('http://127.0.0.1:5000/extract_entities', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text: text }),
-                });
-                const entities = await response.json();
-                const outputDiv = document.getElementById('entities-output');
-                outputDiv.innerHTML = '';
-                entities.forEach(entity => {
-                    const p = document.createElement('p');
-                    p.textContent = `Entity: ${entity.word}, Label: ${entity.entity}`;
-                    outputDiv.appendChild(p);
-                });
-            }
-        </script>
-    </body>
-    </html>
-    ```
+## API Endpoints
 
-    Open this `index.html` file in a web browser to test the NER system by inputting text and clicking the "Extract Entities" button.
+- `GET /`: Renders the home page.
 
-## Project Structure
+- `POST /extract_entities`: Extracts named entities from the provided text.
 
-- `ner_system.py`: Main script containing data preparation, model training, evaluation, and Flask application.
-- `index.html`: Frontend for testing the NER system.
+    - Input:
+        ```json
+        {
+            "text": "Your text goes here."
+        }
+        ```
 
-## Dependencies
+    - Output:
+        ```json
+        [
+            {
+                "word": "entity_word",
+                "entity": "entity_type"
+            },
+            ...
+        ]
+        ```
 
-- `transformers`: For pre-trained BERT model and tokenization.
-- `datasets`: For loading the CoNLL-2003 dataset.
-- `torch`: For deep learning functionalities.
-- `flask`: For creating the web application.
-- `flask-cors`: For handling Cross-Origin Resource Sharing (CORS) in the Flask app.
+## Model
 
-## License
+This project uses the BERT (Bidirectional Encoder Representations from Transformers) model fine-tuned for token classification. The model is loaded using the `transformers` library.
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## Dataset
+
+The CoNLL-2003 dataset is used for training and testing the NER model. It contains news articles annotated with named entity labels.
+
+## Acknowledgments
+
+- [Hugging Face](https://huggingface.co/) for providing pre-trained transformer models and tokenizers.
+- [Flask](https://flask.palletsprojects.com/) for the web framework.
+- [CoNLL-2003 dataset](https://www.clips.uantwerpen.be/conll2003/ner/) for named entity recognition.
+
