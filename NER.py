@@ -19,15 +19,21 @@ Make sure to activate your virtual environment before running the script.
 
 import os
 from datasets import load_dataset
-from transformers import AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, pipeline
+from transformers import BertTokenizerFast, BertForTokenClassification, AutoTokenizer, AutoModelForTokenClassification, TrainingArguments, Trainer, pipeline
 from flask import Flask, request, jsonify
 from flask_cors import CORS # type: ignore
+import torch
 
-# Load the CoNLL-2003 dataset
+# Load dataset
 dataset = load_dataset("conll2003")
+label_list = dataset['train'].features['ner_tags'].feature.names
 
-# Load a pre-trained tokenizer
-tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")
+# Initialize tokenizer and model
+tokenizer = BertTokenizerFast.from_pretrained("bert-base-cased")
+model = BertForTokenClassification.from_pretrained("bert-base-cased", num_labels=len(label_list))
+
+# Define label_all_tokens
+label_all_tokens = True
 
 def tokenize_and_align_labels(examples):
     """

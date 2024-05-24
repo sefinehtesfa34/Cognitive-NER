@@ -49,7 +49,8 @@ Follow these steps to set up and run the project:
 
     Create an `index.html` file with the following content:
 
-    ```html
+    ```
+    html
     <!DOCTYPE html>
     <html lang="en">
     <head>
