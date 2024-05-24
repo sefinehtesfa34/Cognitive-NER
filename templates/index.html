@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NER System</title>
+</head>
+<body>
+    <h1>Named Entity Recognition</h1>
+    <textarea id="text-input" rows="10" cols="50"></textarea><br>
+    <button onclick="extractEntities()">Extract Entities</button>
+    <h2>Entities:</h2>
+    <div id="entities-output"></div>
+
+    <script>
+        async function extractEntities() {
+            const text = document.getElementById('text-input').value;
+            const response = await fetch('http://127.0.0.1:5000/extract_entities', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text }),
+            });
+            const entities = await response.json();
+            const outputDiv = document.getElementById('entities-output');
+            outputDiv.innerHTML = '';
+            entities.forEach(entity => {
+                const p = document.createElement('p');
+                p.textContent = `Entity: ${entity.word}, Label: ${entity.entity}`;
+                outputDiv.appendChild(p);
+            });
+        }
+    </script>
+</body>
+</html>
